@@ -207,7 +207,7 @@ if (paramCount() == 0):
 else:
     data = loadMultiple(commandLineParams())
 
-while (true):
+proc main(): void =
     echo "Please enter a command or type \"help\" for more information"
     var input = readLine(stdin).split(" ")
     var command = input[0]
@@ -229,47 +229,83 @@ while (true):
         of "quarters":
             quarters(data)
         of "top":
-            case args[1].toLowerAscii
-            of "payers":
-                case args[2]
-                    of "2":
-                        top(data,parseInt(args[0]),"payers",2)
-                    of "4":
-                        top(data,parseInt(args[0]),"payers",4)
-                    of "31":
-                        top(data,parseInt(args[0]),"payers",31)
-                    else:
-                        echo "Wrong parameters for command 'top'"
-            of "recipients":
-                case args[2]
-                    of "2":
-                        top(data,parseInt(args[0]),"recipients",2)
-                    of "4":
-                        top(data,parseInt(args[0]),"recipients",4)
-                    of "31":
-                        top(data,parseInt(args[0]),"recipients",31)
-                    else:
-                        echo "Wrong parameters for command 'top'"
-            else:
-                echo "Wrong parameters for command 'top'"
+            try:
+                case args[1].toLowerAscii
+                of "payers":
+                    case args[2]
+                        of "2":
+                            top(data,parseInt(args[0]),"payers",2)
+                        of "4":
+                            top(data,parseInt(args[0]),"payers",4)
+                        of "31":
+                            top(data,parseInt(args[0]),"payers",31)
+                        else:
+                            echo "Wrong parameters for command 'top'"
+                of "recipients":
+                    case args[2]
+                        of "2":
+                            top(data,parseInt(args[0]),"recipients",2)
+                        of "4":
+                            top(data,parseInt(args[0]),"recipients",4)
+                        of "31":
+                            top(data,parseInt(args[0]),"recipients",31)
+                        else:
+                            echo "Wrong parameters for command 'top'"
+                else:
+                    echo "Wrong parameters for command 'top'"
+            except IndexError:
+                echo "Missing Parameters for command 'top'"
+            except:
+                let 
+                    e = getCurrentException()
+                    msg = getCurrentExceptionMsg()
+                echo "Got exception " & repr(e) & " with message " & $msg
+            finally:
+                main()
         of "search":
-            var term = args[1..len(args)-1].join(" ")
-            case args[0]
-                of "payers":
-                    search(data,"payers",term)
-                of "recipients":
-                    search(data,"recipients",term)
-                else:
-                    echo "Wrong parameters for command 'search'"
+            try:
+                var term = args[1..len(args)-1].join(" ")
+                case args[0]
+                    of "payers":
+                        search(data,"payers",term)
+                    of "recipients":
+                        search(data,"recipients",term)
+                    else:
+                        echo "Wrong parameters for command 'search'"
+            except IndexError:
+                echo "Missing Parameters for command 'search'"
+            except RangeError:
+                echo "Missing Parameters for command 'search'"
+            except:
+                let 
+                    e = getCurrentException()
+                    msg = getCurrentExceptionMsg()
+                echo "Got exception " & repr(e) & " with message " & $msg
+            finally:
+                main()
         of "details":
-            var name = args[1..len(args)-1].join(" ")
-            case args[0]
-                of "payers":
-                    details(data,"payers",name)
-                of "recipients":
-                    details(data,"recipients",name)
-                else:
-                    echo "Wrong parameters for command 'details'"
+            try:
+                var name = args[1..len(args)-1].join(" ")
+                case args[0]
+                    of "payers":
+                        details(data,"payers",name)
+                    of "recipients":
+                        details(data,"recipients",name)
+                    else:
+                        echo "Wrong parameters for command 'details'"
+            except IndexError:
+                echo "Missing Parameters for command 'details'"
+            except RangeError:
+                echo "Missing Parameters for command 'details'"
+            except:
+                let 
+                    e = getCurrentException()
+                    msg = getCurrentExceptionMsg()
+                echo "Got exception " & repr(e) & " with message " & $msg
+            finally:
+                main()
         else:
             echo "Unknown command"
+    main()
 
+main()
